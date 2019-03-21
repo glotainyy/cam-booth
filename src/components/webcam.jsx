@@ -14,7 +14,7 @@ export class CamBooth extends React.Component {
   }
 
   onCameraError(error) {
-    console.error('onCameraError', error);
+    console.error('onCameraErrssor', error);
   }
 
   onCameraError(error) { this.onCameraError(error); }
