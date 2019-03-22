@@ -30,4 +30,4 @@ Se positionner dans le répertoire projet et lancer la commande:
 npm run-script build
 ```
 
-un répertoire dist va être crée. Ouvrir le fichier "index.html" généré dans un navigateur and enjoy !
+un répertoire dist va être créé. Ouvrir le fichier "index.html" généré dans un navigateur and enjoy !
