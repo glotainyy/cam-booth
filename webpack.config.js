@@ -9,7 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const PATHS = {
-  client: path.join(__dirname, "index.js"),
+  client: path.join(__dirname, "src", "index.tsx"),
   style: [
     //style: path.join(__dirname, "static", "styles", "style.css"),
     //  path.join(__dirname, "node_modules", "purify-css"),
@@ -31,7 +31,7 @@ const common = {
     filename: 'js/cam-booth.js'
   },
   resolve: {
-    extensions: ["*", ".js", ".jsx", ".css", ".html"],
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".html"],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -40,6 +40,12 @@ const common = {
         path: PATHS.build,
         filename: 'index.html'
       },
+    minify: {
+      collapseWhitespace: true,
+      collapseInlineTagWhitespace: true,
+      removeComments: true,
+      removeRedundantAttributes: true
+    }      
     }),
     new webpack.DefinePlugin({
       '(!self.Buffer && !window.Buffer)': '1 == 2'}),
@@ -59,6 +65,11 @@ const common = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: 'awesome-typescript-loader',
+        exclude: /node_modules/
+      },      
+      {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
@@ -77,14 +88,6 @@ const common = {
       {
         test: /\.css$/,
         use: [
-          // {
-          //   loader: MiniCssExtractPlugin.loader,
-          //   options: {
-          //     // you can specify a publicPath here
-          //     // by default it use publicPath in webpackOptions.output
-          //     //publicPath: '../'
-          //   }
-          // },
           {
             loader: "style-loader", 
             options: { singleton: true }
@@ -96,14 +99,7 @@ const common = {
         ]
       }
     ]
-  },
-  // node: {
-  //   Buffer: true
-  // }
-
-  // externals: {
-  //   Buffer: "{}"
-  // }
+  }
 };
 
 var config;
@@ -116,17 +112,12 @@ switch (process.env.npm_lifecycle_event) {
         mode: "production",
         devtool: "source-map",
         output: {
-          filename: "js/hornet-scan.js",
+          filename: "js/bundle.js",
           chunkFilename: "js/[chunkhash].js"
         }
       },
       configParts.clean(PATHS.build),
       configParts.setFreeVariable("process.env.NODE_ENV", "production"),
-      /*configParts.extractBundle({
-        name: "vendor",
-        entries: Object.keys(pkg.dependencies)
-      }),*/
-      //configParts.minify()
     );
     break;
   case "build-dev":
@@ -146,9 +137,11 @@ switch (process.env.npm_lifecycle_event) {
     );
     break;
   default:
+
     config = merge(
       common, {
-        devtool: "cheap-module-eval-source-map",
+        devtool: "inline-source-map",
+        mode: 'development',
         output: {
           filename: "js/[name].js",
           chunkFilename: "js/[name].js"
@@ -164,11 +157,13 @@ switch (process.env.npm_lifecycle_event) {
         host: "localhost",
         port: 5000,
         watchContentBase: true,
-        //entries: [{ id: "client", file: PATHS.build }],
         entry: PATHS.client
       })
     );
 }
 // Exécution du validateur en mode silencieux pour éviter du texte superflu
 // vers des sorties json (et donc pour la commande 'stats')
+
+console.log(config);
+
 module.exports = config;

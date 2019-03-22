@@ -1,29 +1,36 @@
-import React from 'react';
-import Camera from 'react-html5-camera-photo';
+import * as React from 'react';
+const Camera = require('react-html5-camera-photo');
 
 import '../css/theme.css';
 import 'react-html5-camera-photo/build/css/index.css';
 
-export class CamBooth extends React.Component {
+type Props = {
 
-  onTakePhoto(dataUri) {
+};
+
+type State = {
+
+};
+
+export class CamBooth extends React.Component<Props, State> {
+
+
+  onTakePhoto(dataUri: string) {
     var link = document.createElement("a");
     link.setAttribute("href", dataUri);
     link.setAttribute("download", "image");
     link.click();
   }
 
-  onCameraError(error) {
-    console.error('onCameraErrssor', error);
+  onCameraError(error: any) {
+    console.error('onCameraError', error);
   }
-
-  onCameraError(error) { this.onCameraError(error); }
 
   render() {
     return (
       <div>
         <Camera
-          onTakePhoto={(dataUri) => { this.onTakePhoto(dataUri); }}
+          onTakePhoto={(dataUri: any) => { this.onTakePhoto(dataUri); }}
           idealResolution={{ width: 640, height: 480 }}
         />
       </div>
